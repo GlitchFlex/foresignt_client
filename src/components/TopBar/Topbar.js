@@ -5,6 +5,7 @@ import { Avatar } from 'antd';
 // import { CiUser } from "react-icons/ci";
 import { IoWalletOutline } from 'react-icons/io5';
 import { ethers, Contract } from 'ethers';
+import { AiOutlineReload } from "react-icons/ai";
 import BettingContract from '../../artifacts/contracts/Bet.sol/BettingContract.json'
 // import { Contract, ethers } from "ethers";
 const networks = {
@@ -74,6 +75,10 @@ function Topbar() {
 }
 
 
+const pageReload = ()=>{
+  window.location.reload(1);
+}
+
     
 
     return (
@@ -86,6 +91,9 @@ function Topbar() {
                 </div>
                 <div onClick={connectWallet}>
                     <IoWalletOutline className={styles.bell} />
+                </div>
+                <div onClick={pageReload}>
+                    <AiOutlineReload  className={styles.bell} />
                 </div>
 
                 <Avatar

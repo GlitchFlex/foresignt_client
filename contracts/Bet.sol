@@ -68,6 +68,7 @@ contract BettingContract {
         numGames++;
         emit NewGame(_description);
     }
+    
 
     function getAllGames() public view returns (Game[] memory) {
         Game[] memory allGames = new Game[](numGames);
@@ -80,7 +81,7 @@ contract BettingContract {
     }
 
     function testContract() public pure returns (string memory) {
-        return "HEllOOOO";
+        return "HEllOOOO00";
     }
 
     function placeBet(uint256 _gameId, uint256 _betOption) public payable {

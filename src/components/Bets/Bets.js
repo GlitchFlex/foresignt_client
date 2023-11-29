@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Bets.module.css';
 import Info from '../Bits/Bits';
 import { FaClock, FaEthereum, FaUser } from 'react-icons/fa';
@@ -8,42 +8,69 @@ import { SiBitcoinsv } from 'react-icons/si';
 import { FaBitcoinSign, FaRegClock } from 'react-icons/fa6';
 import { Avatar, Tooltip } from 'antd';
 import { Contract, ethers } from 'ethers';
-import BettingContract from '../../artifacts/contracts/Bet.sol/BettingContract.json'
+import BettingContract from '../../artifacts/contracts/Bet.sol/BettingContract.json';
+import Cards from '../Cards/Cards';
 
 function Bets() {
 
-    const callContract = async () => {
-      
-      
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      console.log("Provider",provider)
-      const signer =await provider.getSigner();
-      console.log("Signer", signer)
-      const contract = new Contract(
-        process.env.REACT_APP_PUBLIC_KEY,
-        BettingContract.abi,
-        signer
-      );
-      console.log(contract,"contract");
-      try {
-          const games = await contract.getAllGames();
-          console.log("Before",await games);
-          const first = await contract.createGame("1st game");
-          await contract.createGame("2st game");
-          
-          console.log("First game",first);
-          
-          const gamesLater = await contract.getAllGames();
-          console.log("After",await gamesLater);
-          
-        } catch (error) {
-            
-            console.log(error);
-      }
-      // const purpose = await contract.runner();
-    }
+
+    const [games, setGames] = useState([]);
+
+    useEffect(() => {
+        getAll();
+    }, []);
 
     
+
+    const getAll = async () => {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contract = new Contract(
+            process.env.REACT_APP_PUBLIC_KEY,
+            BettingContract.abi,
+            signer
+        );
+        try {
+            const gamesLater = await contract.getAllGames();
+            const a = await gamesLater;
+            for (var b of a) {
+                // console.log(
+                games.push(b);
+                setGames([...games]);
+            }
+            
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    console.log(games);
+    console.log(games.slice(0, games.length / 2).length);
+
+
+
+    const callContract = async () => {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+
+        const signer = await provider.getSigner();
+        
+        const contract = new Contract(
+            process.env.REACT_APP_PUBLIC_KEY,
+            BettingContract.abi,
+            signer
+        );
+       
+        try {
+            const gamesLater = await contract.getAllGames();
+            const a = await gamesLater;
+            console.log(a);
+            for (var b of a) {
+                console.log(b[0]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className={styles.bets}>
@@ -54,7 +81,9 @@ function Bets() {
                     justifyContent: 'space-between',
                 }}
             >
-                <div onClick={callContract} className={styles.title}>Ongoing stuffs</div>
+                <div onClick={callContract} className={styles.title}>
+                    Ongoing stuffs
+                </div>
                 <div
                     style={{
                         position: 'relative',
@@ -69,295 +98,9 @@ function Bets() {
                 </div>
             </div>
             <div className={styles.list}>
-                <div
-                    style={{
-                        background: '#ff7438',
-                        color: 'white',
-                        transformOrigin: 'left center',
-                    }}
-                    className={styles.listItems}
-                >
-                    <span>India wins final</span>
-
-                    
-                    <div
-                        style={{
-                            display: 'grid',
-                            marginBottom: '31px',
-                            width: '100%',
-                            gridTemplateColumns: '1fr 1fr',
-                            marginTop: '40px',
-                            gridColumnGap: '40px',
-                        }}
-                    >
-                        <Info
-                            icon={
-                                <MdAdminPanelSettings
-                                    style={{
-                                        color: '#a53500',
-                                        fontSize: '24px',
-                                        marginBottom: '10px',
-                                    }}
-                                />
-                            }
-                            title="Mikhayel"
-                            desc="Admin"
-                        />
-                        <Info
-                            icon={
-                                <FaEthereum
-                                    style={{
-                                        color: '#a53500',
-                                        fontSize: '24px',
-                                    }}
-                                />
-                            }
-                            title="10 eth"
-                            desc="Collection"
-                        />
-                        <Info
-                            icon={
-                                <FaRegClock
-                                    style={{
-                                        color: '#a53500',
-                                        fontSize: '19px',
-                                        marginLeft: '2px',
-                                        marginTop: '2px',
-                                    }}
-                                />
-                            }
-                            title="21.6.24"
-                            desc="Last date"
-                        />
-                        <Info
-                            icon={
-                                <FaBitcoinSign
-                                    style={{
-                                        color: '#a53500',
-                                        fontSize: '19px',
-                                        marginLeft: '2px',
-                                        marginTop: '2px',
-                                    }}
-                                />
-                            }
-                            title="3 eth"
-                            desc="Your stakes"
-                        />
-                    </div>
-
-                    <Avatar.Group
-                        maxCount={3}
-                        maxStyle={{
-                            color: '#f56a00',
-                            backgroundColor: '#fde3cf',
-                        }}
-                    >
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=2" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=4" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=3" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1" />
-                        <Avatar style={{ backgroundColor: '#f56a00' }}>
-                            K
-                        </Avatar>
-                        <Tooltip title="Ant User" placement="top">
-                            <Avatar
-                                style={{ backgroundColor: '#87d068' }}
-                                icon={<FaUser />}
-                            />
-                        </Tooltip>
-                        <Avatar
-                            style={{ backgroundColor: '#1677ff' }}
-                            icon={<FaUser />}
-                        />
-                    </Avatar.Group>
-                </div>
-                <div className={styles.listItems}>
-                    <span>You will get a life</span>
-                    <div
-                        style={{
-                            display: 'grid',
-                            marginBottom: '31px',
-                            width: '100%',
-                            gridTemplateColumns: '1fr 1fr',
-                            marginTop: '40px',
-                            gridColumnGap: '40px',
-                        }}
-                    >
-                        <Info
-                            icon={
-                                <MdAdminPanelSettings
-                                    style={{
-                                        color: 'rgb(180 180 180)',
-                                        fontSize: '24px',
-                                        marginBottom: '10px',
-                                    }}
-                                />
-                            }
-                            title="Mikhayel"
-                            desc="Admin"
-                        />
-                        <Info
-                            icon={
-                                <FaEthereum
-                                    style={{
-                                        color: 'rgb(180 180 180)',
-                                        fontSize: '24px',
-                                    }}
-                                />
-                            }
-                            title="10 eth"
-                            desc="Collection"
-                        />
-                        <Info
-                            icon={
-                                <FaRegClock
-                                    style={{
-                                        color: 'rgb(180 180 180)',
-                                        fontSize: '19px',
-                                        marginLeft: '2px',
-                                        marginTop: '2px',
-                                    }}
-                                />
-                            }
-                            title="21.6.24"
-                            desc="Last date"
-                        />
-                        <Info
-                            icon={
-                                <FaBitcoinSign
-                                    style={{
-                                        color: 'rgb(180 180 180)',
-                                        fontSize: '19px',
-                                        marginLeft: '2px',
-                                        marginTop: '2px',
-                                    }}
-                                />
-                            }
-                            title="3 eth"
-                            desc="Your stakes"
-                        />
-                    </div>
-                    <Avatar.Group
-                        maxCount={3}
-                        maxStyle={{
-                            color: '#f56a00',
-                            backgroundColor: '#fde3cf',
-                        }}
-                    >
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=2" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=4" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=3" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1" />
-                        <Avatar style={{ backgroundColor: '#f56a00' }}>
-                            K
-                        </Avatar>
-                        <Tooltip title="Ant User" placement="top">
-                            <Avatar
-                                style={{ backgroundColor: '#87d068' }}
-                                icon={<FaUser />}
-                            />
-                        </Tooltip>
-                        <Avatar
-                            style={{ backgroundColor: '#1677ff' }}
-                            icon={<FaUser />}
-                        />
-                    </Avatar.Group>
-                </div>
-                <div
-                    style={{ transformOrigin: 'right center' }}
-                    className={styles.listItems}
-                >
-                    <span>Mandarmani trip will happen</span>
-                    <div
-                        style={{
-                            display: 'grid',
-                            marginBottom: '31px',
-                            width: '100%',
-                            gridTemplateColumns: '1fr 1fr',
-                            marginTop: '40px',
-                            gridColumnGap: '40px',
-                        }}
-                    >
-                        <Info
-                            icon={
-                                <MdAdminPanelSettings
-                                    style={{
-                                        color: 'rgb(180 180 180)',
-                                        fontSize: '24px',
-                                        marginBottom: '10px',
-                                    }}
-                                />
-                            }
-                            title="Mikhayel"
-                            desc="Admin"
-                        />
-                        <Info
-                            icon={
-                                <FaEthereum
-                                    style={{
-                                        color: 'rgb(180 180 180)',
-                                        fontSize: '24px',
-                                    }}
-                                />
-                            }
-                            title="10 eth"
-                            desc="Collection"
-                        />
-                        <Info
-                            icon={
-                                <FaRegClock
-                                    style={{
-                                        color: 'rgb(180 180 180)',
-                                        fontSize: '19px',
-                                        marginLeft: '2px',
-                                        marginTop: '2px',
-                                    }}
-                                />
-                            }
-                            title="21.6.24"
-                            desc="Last date"
-                        />
-                        <Info
-                            icon={
-                                <FaBitcoinSign
-                                    style={{
-                                        color: 'rgb(180 180 180)',
-                                        fontSize: '19px',
-                                        marginLeft: '2px',
-                                        marginTop: '2px',
-                                    }}
-                                />
-                            }
-                            title="3 eth"
-                            desc="Your stakes"
-                        />
-                    </div>
-                    <Avatar.Group
-                        maxCount={3}
-                        maxStyle={{
-                            color: '#f56a00',
-                            backgroundColor: '#fde3cf',
-                        }}
-                    >
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=2" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=4" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=3" />
-                        <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1" />
-                        <Avatar style={{ backgroundColor: '#f56a00' }}>
-                            K
-                        </Avatar>
-                        <Tooltip title="Ant User" placement="top">
-                            <Avatar
-                                style={{ backgroundColor: '#87d068' }}
-                                icon={<FaUser />}
-                            />
-                        </Tooltip>
-                        <Avatar
-                            style={{ backgroundColor: '#1677ff' }}
-                            icon={<FaUser />}
-                        />
-                    </Avatar.Group>
-                </div>
+            {games.slice(0, games.length / 2).map((game, index) => (
+                <Cards key={index} game={game} />
+))}
             </div>
         </div>
     );
