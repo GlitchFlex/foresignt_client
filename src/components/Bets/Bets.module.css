@@ -1,0 +1,54 @@
+.title{
+    font-family: poppins;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 20px;
+}
+
+.bets{
+    width: 100%;
+    /* background-color: rgb(196, 130, 50); */
+}
+
+.list{
+    display: flex;
+    gap: 10px;
+
+}
+.listItems{
+    width: 32%;
+    height: 220px;
+    font-family: poppins;
+    /* background-color: aquamarine; */
+    background: -webkit-linear-gradient(45deg, rgb(82, 82, 82) 0%, hsla(0, 0%, 27%, 1) 50%, hsla(218, 24%, 19%, 1) 99%);
+    padding: 13px;
+    color: white;
+    font-weight: 500;
+    border-radius: 15px;
+    box-shadow: 13px 10px 20px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    scale: 1;
+    transition: 0.2s ease-in-out;
+    position: relative;
+    z-index: 1;
+    
+}
+
+.listItems:hover{
+    /* width: 32%;
+    height: 175px; */
+    transition: 0.2s ease-in-out;
+    font-family: poppins;
+    /* background-color: aquamarine; */
+    background: -webkit-linear-gradient(45deg, rgb(82, 82, 82) 0%, hsla(0, 0%, 27%, 1) 50%, hsla(218, 24%, 19%, 1) 99%);
+    padding: 13px;
+    color: white;
+    font-weight: 500;
+    border-radius: 15px;
+    box-shadow: 13px 10px 20px 5px rgba(0, 0, 0, 0.2);
+    scale : 1.12;
+    z-index: 10;
+    position: relative;
+    
+}

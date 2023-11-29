@@ -1,0 +1,26 @@
+.dashboard{
+    /* background-color: pink; */
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+    width: 100%;
+    height: calc(100vh - 60px);
+    display: flex;
+    gap: 15px;
+
+}
+
+.left{
+    width: 57%;
+    background-color: aliceblue;
+    height: 100%;
+}
+
+.right{
+    /* background-color: rgb(77, 120, 158); */
+    width: 40%;
+    height: 100%;
+}
+
+
+
