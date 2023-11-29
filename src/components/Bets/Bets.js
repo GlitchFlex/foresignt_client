@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './Bets.module.css';
 import Info from '../Bits/Bits';
 import { FaClock, FaEthereum, FaUser } from 'react-icons/fa';
@@ -7,8 +7,44 @@ import { MdAdminPanelSettings } from 'react-icons/md';
 import { SiBitcoinsv } from 'react-icons/si';
 import { FaBitcoinSign, FaRegClock } from 'react-icons/fa6';
 import { Avatar, Tooltip } from 'antd';
+import { Contract, ethers } from 'ethers';
+import BettingContract from '../../artifacts/contracts/Bet.sol/BettingContract.json'
 
 function Bets() {
+
+    const callContract = async () => {
+      
+      
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      console.log("Provider",provider)
+      const signer =await provider.getSigner();
+      console.log("Signer", signer)
+      const contract = new Contract(
+        process.env.REACT_APP_PUBLIC_KEY,
+        BettingContract.abi,
+        signer
+      );
+      console.log(contract,"contract");
+      try {
+          const games = await contract.getAllGames();
+          console.log("Before",await games);
+          const first = await contract.createGame("1st game");
+          await contract.createGame("2st game");
+          
+          console.log("First game",first);
+          
+          const gamesLater = await contract.getAllGames();
+          console.log("After",await gamesLater);
+          
+        } catch (error) {
+            
+            console.log(error);
+      }
+      // const purpose = await contract.runner();
+    }
+
+    
+
     return (
         <div className={styles.bets}>
             <div
@@ -18,7 +54,7 @@ function Bets() {
                     justifyContent: 'space-between',
                 }}
             >
-                <div className={styles.title}>Ongoing stuffs</div>
+                <div onClick={callContract} className={styles.title}>Ongoing stuffs</div>
                 <div
                     style={{
                         position: 'relative',

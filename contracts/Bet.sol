@@ -1,10 +1,20 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0 ;
+pragma solidity >=0.7.0 <0.9.0;
 
 contract BettingContract {
-
-    enum BetState { PENDING, WINNING, LOSING, PAID_OUT,LOST }
-    enum GameState { OPEN, CLOSED, WAITING_FOR_WINNERS, WINNERS_DECLARED }
+    enum BetState {
+        PENDING,
+        WINNING,
+        LOSING,
+        PAID_OUT,
+        LOST
+    }
+    enum GameState {
+        OPEN,
+        CLOSED,
+        WAITING_FOR_WINNERS,
+        WINNERS_DECLARED
+    }
 
     struct Bet {
         address user;
@@ -32,7 +42,11 @@ contract BettingContract {
     event NewBet(uint256 gameID, uint256 betOption);
     event GameClosed(uint256 gameID);
     event BetStateChanged(uint256 gameID, uint256 betOption, BetState newState);
-    event WinningsDistributed(uint256 gameID, uint256[] winningBets, uint256 totalWinnings);
+    event WinningsDistributed(
+        uint256 gameID,
+        uint256[] winningBets,
+        uint256 totalWinnings
+    );
 
     constructor() {
         numGames = 0;
@@ -48,14 +62,26 @@ contract BettingContract {
     }
 
     function createGame(string memory _description) public {
-        games.push(Game(_description, true, new uint256[](0), 0, 0, GameState.OPEN));
+        games.push(
+            Game(_description, true, new uint256[](0), 0, 0, GameState.OPEN)
+        );
         numGames++;
         emit NewGame(_description);
     }
 
-    function testContract() public pure returns (string memory) {
-            return "HEllOOOO";
+    function getAllGames() public view returns (Game[] memory) {
+        Game[] memory allGames = new Game[](numGames);
+
+        for (uint256 i = 0; i < numGames; i++) {
+            allGames[i] = games[i];
         }
+
+        return allGames;
+    }
+
+    function testContract() public pure returns (string memory) {
+        return "HEllOOOO";
+    }
 
     function placeBet(uint256 _gameId, uint256 _betOption) public payable {
         require(_gameId < numGames, "Invalid game ID");
@@ -100,16 +126,28 @@ contract BettingContract {
         }
     }
 
-    function declareWinners(uint256 _gameId, uint256[] memory _winningBets) public onlyOwner {
+    function declareWinners(
+        uint256 _gameId,
+        uint256[] memory _winningBets
+    ) public onlyOwner {
         require(games[_gameId].state == GameState.OPEN, "Game is not open");
-        require(_winningBets.length > 0, "At least one winning bet must be provided");
-        require(_winningBets.length <= games[_gameId].numBets, "Invalid number of winning bets provided");
+        require(
+            _winningBets.length > 0,
+            "At least one winning bet must be provided"
+        );
+        require(
+            _winningBets.length <= games[_gameId].numBets,
+            "Invalid number of winning bets provided"
+        );
 
         // Mark winning bets
         for (uint256 i = 0; i < _winningBets.length; i++) {
             uint256 betId = _winningBets[i];
             Bet storage bet = bets[_gameId][betId];
-            require(bet.state == BetState.PENDING, "Bet is already declared as a winner or loser");
+            require(
+                bet.state == BetState.PENDING,
+                "Bet is already declared as a winner or loser"
+            );
             bet.state = BetState.WINNING;
         }
 
@@ -129,7 +167,10 @@ contract BettingContract {
     }
 
     function distributeWinnings(uint256 _gameId) public onlyOwner {
-        require(games[_gameId].state == GameState.WAITING_FOR_WINNERS, "Game is not waiting for winners");
+        require(
+            games[_gameId].state == GameState.WAITING_FOR_WINNERS,
+            "Game is not waiting for winners"
+        );
 
         uint256 totalFunds = games[_gameId].totalFunds;
         uint256 numWinningBets = winningBets[_gameId].length;
