@@ -1,23 +1,57 @@
-import { Button, Checkbox, DatePicker, Form, Input, Modal, Switch, message } from 'antd';
+import {
+    Button,
+    Checkbox,
+    DatePicker,
+    Form,
+    Input,
+    Modal,
+    Switch,
+    message,
+} from 'antd';
 import { Contract, ethers } from 'ethers';
 import React, { useState } from 'react';
 import BettingContract from '../../artifacts/contracts/Bet.sol/BettingContract.json';
+import { FaMinus, FaPlus } from 'react-icons/fa';
 
-function CreateGameModal({setSpinningText,spinning, setSpinning,setCounter, counter,createGameModalIsOpen, setCreateGameModalIsOpen }) {
+function CreateGameModal({
+    setSpinningText,
+    spinning,
+    setSpinning,
+    setCounter,
+    counter,
+    createGameModalIsOpen,
+    setCreateGameModalIsOpen,
+}) {
     const [form] = Form.useForm();
+
+    const [optionsArr, setOptionsArr] = useState([]);
+    const [option, setOption] = useState('');
     // const [formLayout, setFormLayout] = useState < LayoutType > 'horizontal';
 
     const handleModal = () => {
         setCreateGameModalIsOpen(false);
     };
 
+    const addOptions = () => {
+        optionsArr.push(option);
+        setOptionsArr([...optionsArr]);
+        setOption('');
+    };
+
+    const removeOptions = (index)=>{
+        optionsArr.splice(index, 1);
+        setOptionsArr([...optionsArr]);
+    }
+
+    
+
+    
+
     const onFinish = async (values) => {
         // console.log('Success:', values);
         setCreateGameModalIsOpen(false);
-        setSpinningText("Allow transaction to proceed")
+        setSpinningText('Allow transaction to proceed');
         setSpinning(true);
-
-
 
         const provider = new ethers.BrowserProvider(window.ethereum);
 
@@ -29,23 +63,20 @@ function CreateGameModal({setSpinningText,spinning, setSpinning,setCounter, coun
             signer
         );
 
+        const createGameTransaction = await contract.createGame(
+            values.decription,
+            optionsArr
+        );
 
-        const createGameTransaction = await contract.createGame(values.decription);
-
-        setSpinningText("Transaction in progress")
-
+        setSpinningText('Transaction in progress');
 
         await createGameTransaction.wait();
-        
-        console.log("transaction done")
-        setCounter(counter+1);
 
+        console.log('transaction done');
+        setCounter(counter + 1);
 
-
-        message.success("Game created!")
-        window.location.reload(1)
-
-        
+        message.success('Game created!');
+        window.location.reload(1);
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -96,6 +127,70 @@ function CreateGameModal({setSpinningText,spinning, setSpinning,setCounter, coun
                             }
                         }
                     />
+                </Form.Item>
+                <Form.Item
+                    label="Game Options"
+                    name="options"
+                    style={{ display: 'flex', flexDirection: 'row' }}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Add options please',
+                        },
+                    ]}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            height: '20px',
+                            alignItems: 'center',
+                            marginBottom: '10px',
+                        }}
+                    >
+                        <Input
+                            placeholder="Describe your game"
+                            onChange={(e) => {
+                                setOption(e.target.value);
+                            }}
+                        />
+                        <FaPlus
+                            onClick={addOptions}
+                            style={{
+                                color: '#5d5d5d',
+                                fontSize: '15px',
+                                cursor: 'pointer',
+                                marginLeft: '25px',
+                            }}
+                        />
+                    </div>
+
+                    {optionsArr.map((element, index) => (
+                        <div
+                            style={{
+                                backgroundColor: 'gainsboro',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                height: '30px',
+                                width: '83%',
+                                alignItems: 'center',
+                                borderRadius: '5px',
+                                padding: '10px',
+                                marginBottom: '5px',
+                            }}
+                        >
+                            <div>{element}</div>
+
+                            <FaMinus
+                            onClick={removeOptions}
+                                style={{
+                                    color: '#5d5d5d',
+                                    fontSize: '15px',
+                                    cursor: 'pointer',
+                                    marginLeft: '25px',
+                                }}
+                            />
+                        </div>
+                    ))}
                 </Form.Item>
                 <Form.Item
                     label="Last Date"

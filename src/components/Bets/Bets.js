@@ -14,7 +14,7 @@ import Cards from '../Cards/Cards';
 function Bets({counter, setCounter}) {
 
 
-    console.log("Bets : ",counter);
+    // console.log("Bets : ",counter);
 
 
 
@@ -51,8 +51,8 @@ function Bets({counter, setCounter}) {
         // window.location.reload(1);
     };
 
-    console.log(games);
-    console.log(games.slice(0, games.length / 2).length);
+    // console.log(games);
+    // console.log(games.slice(0, games.length / 2).length);
 
 
 
@@ -70,9 +70,9 @@ function Bets({counter, setCounter}) {
         try {
             const gamesLater = await contract.getAllGames();
             const a = await gamesLater;
-            console.log(a);
+            // console.log(a);
             for (var b of a) {
-                console.log(b[0]);
+                // console.log(b[0]);
             }
         } catch (error) {
             console.log(error);
@@ -106,7 +106,7 @@ function Bets({counter, setCounter}) {
             </div>
             <div className={styles.list}>
             {games.slice(0, games.length / 2).map((game, index) => (
-                <Cards key={index} game={game} />
+                <Cards key={index} game={game} index = {index} />
 ))}
             </div>
         </div>

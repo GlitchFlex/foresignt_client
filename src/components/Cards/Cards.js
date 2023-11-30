@@ -7,11 +7,14 @@ import styles from './Cards.module.css';
 import { MdAdminPanelSettings } from 'react-icons/md';
 import PlaceBetModal from '../PlaceBetModal/PlaceBetModal';
 
-function Cards({ game }) {
+function Cards({ game, index }) {
 
     const [betModalIsOpen, setBetModalIsOpen] = useState(false);
 
+    const [selectedGame, setSelectedGame] = useState();
+
     const handleClick = ()=>{
+        setSelectedGame(game);
         if(betModalIsOpen){
             setBetModalIsOpen(false)
         }else{
@@ -28,8 +31,10 @@ function Cards({ game }) {
                 // transformOrigin: 'left center',
             }}
             className={styles.listItems}
-        >
-            <PlaceBetModal betModalIsOpen = {betModalIsOpen} setBetModalIsOpen = {setBetModalIsOpen}/>
+        >   {
+                selectedGame && 
+            <   PlaceBetModal game = {selectedGame} index = {index} betModalIsOpen = {betModalIsOpen} setBetModalIsOpen = {setBetModalIsOpen}/>
+            }
             <span>{game[0]}</span>
             <div
                 style={{

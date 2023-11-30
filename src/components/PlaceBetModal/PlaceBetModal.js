@@ -1,46 +1,66 @@
-import { Button, Checkbox, DatePicker, Form, Input, Modal, Switch, message } from 'antd';
+import {
+    Button,
+    Checkbox,
+    DatePicker,
+    Form,
+    Input,
+    InputNumber,
+    Modal,
+    Radio,
+    Space,
+    Switch,
+    message,
+} from 'antd';
 import { Contract, ethers } from 'ethers';
 import React, { useState } from 'react';
 import BettingContract from '../../artifacts/contracts/Bet.sol/BettingContract.json';
 
-function PlaceBetModal({ betModalIsOpen, setBetModalIsOpen }) {
+function PlaceBetModal({index ,game, betModalIsOpen, setBetModalIsOpen }) {
     const [form] = Form.useForm();
-    // const [formLayout, setFormLayout] = useState < LayoutType > 'horizontal';
+    const [value, setValue] = useState(1);
+    const [amount, setAmount] = useState();
 
     const handleModal = () => {
         setBetModalIsOpen(false);
     };
 
+    const onAmountChange = (value)=>{
+        setAmount(value);
+    }
+
     const onFinish = async (values) => {
-        // console.log('Success:', values);
-
         const provider = new ethers.BrowserProvider(window.ethereum);
-
         const signer = await provider.getSigner();
-
         const contract = new Contract(
             process.env.REACT_APP_PUBLIC_KEY,
             BettingContract.abi,
-            signer
+            signer,
+        
         );
 
+        // ethers.utils.parseUnits(amount.toString(), 'ether')
+        // const WeiToEther = ethers.utils.formatEther(weiValue)
+        // amount(amount);
+        // const obj = { value: parseInt(mount)*100000};
+        // console.log(amount, {...options})
 
-        await contract.createGame(values.decription);
-        message.success("please keep reloading until you see your game")
-
-        
+        await contract.placeBet(index, 0 ,{ value: ethers.parseUnits(amount.toString(),18) });
     };
+
+    console.log(index);
+    
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
-    const onChange = (checked) => {
-        console.log(`switch to ${checked}`);
-    };
+    const onChange = (e) => {
+        console.log("selected now",e.target.value);
+        setValue(e.target.value);
+      };
     return (
         <Modal
-            title=<h1 style={{ color: '#707070' }}>Create Game</h1>
+            title=<h1 style={{ color: '#707070' }}>{game[0]}</h1>
             open={betModalIsOpen}
             onOk={onFinish}
             closeIcon={null}
@@ -58,52 +78,19 @@ function PlaceBetModal({ betModalIsOpen, setBetModalIsOpen }) {
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
-                <Form.Item
-                    label="Description"
-                    name="decription"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please describe your game',
-                        },
-                    ]}
-                >
-                    <Input
-                        placeholder="Describe your game"
-                        style={
-                            {
-                                // border: 'none',
-                                // borderBottom: '2px solid lightgrey',
-                                // borderRadius: '0',
-                                // fontSize: '17px',
-                            }
-                        }
-                    />
-                </Form.Item>
-                <Form.Item
-                    label="Last Date"
-                    name="date"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please select the last date',
-                        },
-                    ]}
-                >
-                    <DatePicker size="middle" />
-                </Form.Item>
+                <Radio.Group onChange={onChange} value={value}>
+                    <Space direction="vertical">
+                        {game[6].map((element, index)=>(
+                            <Radio value={index}>{element}</Radio>
+                        ))}
+                    </Space>
+                </Radio.Group>
 
-                <Form.Item
-                    label="Public"
-                    name="isPublic"
-                    valuePropName="checked"
-                >
-                    <Switch defaultChecked onChange={onChange} />;
-                </Form.Item>
+                <InputNumber  defaultValue={1} onChange={onAmountChange} />
 
                 <Form.Item wrapperCol={{ offset: 18, span: 17 }}>
                     <Button type="primary" htmlType="submit">
-                        Create game
+                        Place Bet
                     </Button>
                 </Form.Item>
             </Form>
