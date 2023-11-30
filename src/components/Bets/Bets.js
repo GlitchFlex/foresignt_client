@@ -11,18 +11,23 @@ import { Contract, ethers } from 'ethers';
 import BettingContract from '../../artifacts/contracts/Bet.sol/BettingContract.json';
 import Cards from '../Cards/Cards';
 
-function Bets() {
+function Bets({counter, setCounter}) {
+
+
+    console.log("Bets : ",counter);
+
 
 
     const [games, setGames] = useState([]);
 
     useEffect(() => {
         getAll();
-    }, []);
+    }, [counter]);
 
     
 
     const getAll = async () => {
+
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
         const contract = new Contract(
@@ -42,6 +47,8 @@ function Bets() {
         } catch (err) {
             console.log(err);
         }
+
+        // window.location.reload(1);
     };
 
     console.log(games);

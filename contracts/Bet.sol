@@ -81,7 +81,7 @@ contract BettingContract {
     }
 
     function testContract() public pure returns (string memory) {
-        return "HEllOOOO00";
+        return "HEllOOOO000";
     }
 
     function placeBet(uint256 _gameId, uint256 _betOption) public payable {

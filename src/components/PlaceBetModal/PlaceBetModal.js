@@ -3,21 +3,16 @@ import { Contract, ethers } from 'ethers';
 import React, { useState } from 'react';
 import BettingContract from '../../artifacts/contracts/Bet.sol/BettingContract.json';
 
-function CreateGameModal({setSpinningText,spinning, setSpinning,setCounter, counter,createGameModalIsOpen, setCreateGameModalIsOpen }) {
+function PlaceBetModal({ betModalIsOpen, setBetModalIsOpen }) {
     const [form] = Form.useForm();
     // const [formLayout, setFormLayout] = useState < LayoutType > 'horizontal';
 
     const handleModal = () => {
-        setCreateGameModalIsOpen(false);
+        setBetModalIsOpen(false);
     };
 
     const onFinish = async (values) => {
         // console.log('Success:', values);
-        setCreateGameModalIsOpen(false);
-        setSpinningText("Allow transaction to proceed")
-        setSpinning(true);
-
-
 
         const provider = new ethers.BrowserProvider(window.ethereum);
 
@@ -30,20 +25,8 @@ function CreateGameModal({setSpinningText,spinning, setSpinning,setCounter, coun
         );
 
 
-        const createGameTransaction = await contract.createGame(values.decription);
-
-        setSpinningText("Transaction in progress")
-
-
-        await createGameTransaction.wait();
-        
-        console.log("transaction done")
-        setCounter(counter+1);
-
-
-
-        message.success("Game created!")
-        window.location.reload(1)
+        await contract.createGame(values.decription);
+        message.success("please keep reloading until you see your game")
 
         
     };
@@ -58,7 +41,7 @@ function CreateGameModal({setSpinningText,spinning, setSpinning,setCounter, coun
     return (
         <Modal
             title=<h1 style={{ color: '#707070' }}>Create Game</h1>
-            open={createGameModalIsOpen}
+            open={betModalIsOpen}
             onOk={onFinish}
             closeIcon={null}
             footer={null}
@@ -128,4 +111,4 @@ function CreateGameModal({setSpinningText,spinning, setSpinning,setCounter, coun
     );
 }
 
-export default CreateGameModal;
+export default PlaceBetModal;

@@ -5,14 +5,23 @@ import Chart from '../../components/Charts/Charts'
 import { FloatButton } from 'antd'
 import { FaPlus } from 'react-icons/fa'
 import CreateGameModal from '../../components/CreateGameModal/CreateGameModal'
+import Loader from '../../components/Loader/Loader'
 function Dashboard() {
 
   const [createGameModalIsOpen, setCreateGameModalIsOpen] = useState(false);
+
+  const [counter, setCounter] = useState(0);
+
+  const [spinning, setSpinning] = useState(false);
+  const [spinningText, setSpinningText] = useState("");
+
+  console.log("dashboard : ",counter);
   
 
   return (
     <div className = {styles.dashboard}>
-      <CreateGameModal createGameModalIsOpen = {createGameModalIsOpen} setCreateGameModalIsOpen = {setCreateGameModalIsOpen}/>
+      <Loader spinning={spinning} text = {spinningText} setSpinningText = {setSpinningText} setSpinning={setSpinning}/>
+      <CreateGameModal  setSpinningText = {setSpinningText} spinning = {spinning} setSpinning = {setSpinning} setCounter = {setCounter} counter = {counter} createGameModalIsOpen = {createGameModalIsOpen} setCreateGameModalIsOpen = {setCreateGameModalIsOpen}/>
       <FloatButton
       shape="circle"
       type="primary"
@@ -21,11 +30,8 @@ function Dashboard() {
       onClick={()=>{createGameModalIsOpen ? setCreateGameModalIsOpen(false) : setCreateGameModalIsOpen(true)}}
     />
         <div className={styles.left}>
-            <Bets/>
+            <Bets counter={counter} setCounter={setCounter}/>
         </div>
-        {/* <div className={styles.right}>
-          <Chart/>
-        </div> */}
     </div>
   )
 }
