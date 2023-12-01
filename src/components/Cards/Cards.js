@@ -144,7 +144,7 @@ function Cards({ game, index }) {
                     // icon={<DownloadOutlined />}
                     // size={}
                 >
-                    Place bet
+                    Transact
                 </Button>
             </div>
         </div>

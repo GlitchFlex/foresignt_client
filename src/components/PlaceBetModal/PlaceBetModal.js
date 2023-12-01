@@ -77,7 +77,9 @@ function PlaceBetModal({index ,game, betModalIsOpen, setBetModalIsOpen }) {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
-            >
+            >   
+                <div>
+
                 <Radio.Group onChange={onChange} value={value}>
                     <Space direction="vertical">
                         {game[6].map((element, index)=>(
@@ -87,10 +89,11 @@ function PlaceBetModal({index ,game, betModalIsOpen, setBetModalIsOpen }) {
                 </Radio.Group>
 
                 <InputNumber  defaultValue={1} onChange={onAmountChange} />
+                </div>
 
                 <Form.Item wrapperCol={{ offset: 18, span: 17 }}>
                     <Button type="primary" htmlType="submit">
-                        Place Bet
+                        Transact
                     </Button>
                 </Form.Item>
             </Form>
